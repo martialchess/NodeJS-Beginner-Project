@@ -15,14 +15,13 @@ const Product = sequelize.define('product', {
     allowNull: false
   },
   imageUrl: {
-    type: Sequalize.STRING,
+    type: Sequelize.STRING,
     allowNull: false
   },
   description: {
-    type: Sequalize.STRING,
+    type: Sequelize.STRING,
     allowNull: false
   }
 });
-
 
 module.exports = Product;
