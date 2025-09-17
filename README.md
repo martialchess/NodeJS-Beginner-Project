@@ -20,7 +20,7 @@ The project will evolve with frequent updates, refactors, and feature additions.
 ## 🛠️ Setup & Installation
 1. Clone the repo:
    ```bash
-   git clone https://github.com/martialchess/NodeJS-Beginner-Project.git
+   git clone https://github.com/your-username/your-repo-name.git
    cd your-repo-name
 
 2. Install Dependencies:
@@ -45,7 +45,7 @@ Push changes:
 
 git push origin feature/your-feature
 
-# To Do
+# To Do List
 
  Set up authentication
 
