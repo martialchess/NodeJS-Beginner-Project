@@ -7,20 +7,13 @@ class User {
   constructor(username, email, cart, id) {
     this.name = username;
     this.email = email;
-    this.cart = cart ? cart : { items: [] }; // default safe cart
-    this._id = id ? new ObjectId(id) : null;
+    this.cart = cart; // {items: []}
+    this._id = id;
   }
 
   save() {
     const db = getDb();
-    if (this._id) {
-      return db.collection('users').updateOne(
-        { _id: this._id },
-        { $set: { name: this.name, email: this.email, cart: this.cart } }
-      );
-    } else {
-      return db.collection('users').insertOne(this);
-    }
+    return db.collection('users').insertOne(this);
   }
 
   addToCart(product) {
@@ -39,20 +32,23 @@ class User {
         quantity: newQuantity
       });
     }
-    const updatedCart = { items: updatedCartItems };
+    const updatedCart = {
+      items: updatedCartItems
+    };
     const db = getDb();
-    return db.collection('users').updateOne(
-      { _id: this._id },
-      { $set: { cart: updatedCart } }
-    );
+    return db
+      .collection('users')
+      .updateOne(
+        { _id: new ObjectId(this._id) },
+        { $set: { cart: updatedCart } }
+      );
   }
 
   getCart() {
-    if (!this.cart || !this.cart.items) {
-      return Promise.resolve([]);
-    }
     const db = getDb();
-    const productIds = this.cart.items.map(i => i.productId);
+    const productIds = this.cart.items.map(i => {
+      return i.productId;
+    });
     return db
       .collection('products')
       .find({ _id: { $in: productIds } })
@@ -74,15 +70,58 @@ class User {
       return item.productId.toString() !== productId.toString();
     });
     const db = getDb();
-    return db.collection('users').updateOne(
-      { _id: this._id },
-      { $set: { cart: { items: updatedCartItems } } }
-    );
+    return db
+      .collection('users')
+      .updateOne(
+        { _id: new ObjectId(this._id) },
+        { $set: { cart: { items: updatedCartItems } } }
+      );
+  }
+
+  addOrder() {
+    const db = getDb();
+    return this.getCart()
+      .then(products => {
+        const order = {
+          items: products,
+          user: {
+            _id: new ObjectId(this._id),
+            name: this.name
+          }
+        };
+        return db.collection('orders').insertOne(order);
+      })
+      .then(result => {
+        this.cart = { items: [] };
+        return db
+          .collection('users')
+          .updateOne(
+            { _id: new ObjectId(this._id) },
+            { $set: { cart: { items: [] } } }
+          );
+      });
+  }
+
+  getOrders() {
+    const db = getDb();
+    return db
+      .collection('orders')
+      .find({ 'user._id': new ObjectId(this._id) })
+      .toArray();
   }
 
   static findById(userId) {
     const db = getDb();
-    return db.collection('users').findOne({ _id: new ObjectId(userId) });
+    return db
+      .collection('users')
+      .findOne({ _id: new ObjectId(userId) })
+      .then(user => {
+        console.log(user);
+        return user;
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 }
 
