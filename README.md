@@ -1,54 +1,86 @@
-# Node.js Project
+Node.js Project
 
-A practice Node.js project built to simulate real-world development workflow.  
-The project will evolve with frequent updates, refactors, and feature additions.
+A practice Node.js project simulating a real-world development workflow.
+This project evolves with frequent updates, refactors, and feature additions — showcasing both technical learning and professional Git/GitHub practices.
 
-## 🚀 Features
-- Express.js backend
-- Dynamic routing
-- View templates (EJS / Pug / Handlebars)
-- Modular project structure
+🚀 Features
 
-## 📂 Project Structure
-/controllers → app logic
-/models → data handling
-/routes → route definitions
-/views → templates
-/public → static files
+Express.js backend
 
+Modular MVC structure (controllers, models, routes, views)
 
-## 🛠️ Setup & Installation
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+Dynamic routing
 
-2. Install Dependencies:
-   npm install
+View templates with EJS
 
-3. Run the app:
-   npm start
+Static assets served from /public
 
-# Development Workflow
+Database integration:
 
-Work on a new branch:
+MySQL (raw SQL, Sequelize ORM)
 
-git checkout -b feature/your-feature
+MongoDB (native driver, Mongoose ODM)
 
+📂 Project Structure
 
-Commit changes frequently with clear messages:
+/controllers   → Application logic
+/models        → Data handling (SQL/NoSQL/Mongoose)
+ /routes        → Route definitions
+/views         → EJS templates
+/public        → Static files (CSS, JS, images)
 
-git commit -m "feat: added product controller"
+🛠️ Setup & Installation
+
+1. Clone the repo
+
+git clone https://github.com/martialchess/NodeJS-Beginner-Project.git
+cd NodeJS-Beginner-Project
 
 
-Push changes:
+2. Install dependencies
 
-git push origin feature/your-feature
+npm install
 
-# To Do List
 
- Set up authentication
+3. Set up environment variables
+Copy .env.example → .env and add your own values:
 
- Add database integration
+PORT=3000
+MONGO_URI=your_connection_string
+MYSQL_USER=root
+MYSQL_PASS=password
 
- Improve error handling
+
+4. Run the app
+
+npm start
+
+📌 Roadmap (Upcoming Modules)
+
+✅ SQL with MySQL (raw + Sequelize ORM)
+
+✅ NoSQL with MongoDB (native driver + Mongoose)
+
+🔜 Sessions & Cookies
+
+🔜 Authentication (basic + advanced)
+
+🔜 Sending Emails
+
+🔜 Input Validation & Error Handling
+
+🔜 File Upload & Download
+
+🔜 Pagination
+
+🔜 Payments Integration
+
+🔜 REST APIs (with async/await)
+
+🔜 WebSockets & Socket.io
+
+🔜 GraphQL API
+
+🔜 Deployment & Testing
+
+🔜 Modern JS, Node.js refinements, TypeScript, and Deno
