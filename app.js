@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require('path');
 
 const express = require('express');
@@ -32,10 +33,11 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-mongoose.connect('mongodb+srv://rida_main:DKFQyJT3cSYASrxV@cluster0.cxbajmp.mongodb.net/shop?retryWrites=true&w=majority&appName=Cluster0')
-.then(result => {
-  app.listen(3000);
-})
-.catch(err => {
-  console.log(err);
-});
+mongoose.connect(process.env.MONGODB_URI)
+  .then(result => {
+    app.listen(process.env.PORT || 3000);
+  })
+  .catch(err => {
+    console.log(err);
+  });
+
