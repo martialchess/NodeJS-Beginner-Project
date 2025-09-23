@@ -45,7 +45,7 @@ Push changes:
 
 git push origin feature/your-feature
 
-# To Do
+# To Do List
 
  Set up authentication
 
