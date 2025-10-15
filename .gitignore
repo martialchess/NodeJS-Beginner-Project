@@ -37,3 +37,6 @@ Thumbs.db
 .cache/
 .next/
 out/
+
+.env
+
