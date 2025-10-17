@@ -50,26 +50,14 @@ app.use(authRoutes);
 
 app.use(errorController.get404); 
 
-mongoose.connect(process.env.MONGODB_URI)
+mongoose
+  .connect(process.env.MONGODB_URI)
   .then(result => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Rick',
-          email: 'rick@example.com',
-          cart: {
-            items: []
-          }
-      });
-      user.save();
-    }
-  });
-    
-  console.log('✅ Mongoose connected successfully!'); // <-- add this
-  app.listen(process.env.PORT || 3000, () => {
-    console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
-  });
-})
-.catch(err => {
-  console.log('❌ Mongoose connection error:', err);
+    console.log('✅ Mongoose connected successfully!');
+    app.listen(process.env.PORT || 3000, () => {
+      console.log(`🚀 Server running on port ${process.env.PORT || 3000}`);
+    });
+  })
+  .catch(err => {
+    console.log('❌ Mongoose connection error:', err);
   });
