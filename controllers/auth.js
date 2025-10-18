@@ -95,7 +95,7 @@ exports.postSignup = (req, res, next) => {
             to: email,
             from: 'editor@quantareads.com',
             subject: 'Signup Successful',
-            html: '<h1>You have successfully signed up!</h1>'
+            html: '<h1>Congratulations! You have successfully signed up!</h1>'
           });
         })
         .catch(err => {
