@@ -6,6 +6,7 @@ const { validationResult } = require('express-validator');
 const User = require('../models/user');
 const e = require('connect-flash');
 const crypto = require('crypto');
+const { param } = require('../routes/admin');
 
 const transporter = nodemailer.createTransport(sendgridTransport({
   auth: {
@@ -23,7 +24,12 @@ exports.getLogin = (req, res, next) => {
   res.render('auth/login', {
     path: '/login',
     pageTitle: 'Login',
-    errorMessage: message
+    errorMessage: message,
+    oldInput: {
+      email: '',
+      password: ''
+    },
+    validationErrors: []
   });
 };
 
@@ -43,7 +49,7 @@ exports.getSignup = (req, res, next) => {
       password: '',
       confirmPassword: ''
     },
-    validationErrors: []
+    validationErrors: [] 
   });
 };
 
@@ -56,7 +62,12 @@ exports.postLogin = (req, res, next) => {
     return res.status(422).render('auth/login', {
       path: '/login',
       pageTitle: 'Login',
-      errorMessage: errors.array()[0].msg
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email: email,
+        password: password
+      },
+      validationErrors: errors.array()
     });
   }
   
@@ -66,7 +77,12 @@ exports.postLogin = (req, res, next) => {
         return res.status(422).render('auth/login', {
           path: '/login',
           pageTitle: 'Login',
-          errorMessage: 'Invalid email or password.'
+          errorMessage: 'Invalid email or password.',
+          oldInput: {
+            email: email,
+            password: password
+          },
+          validationErrors: []
         });
       }
       bcrypt
@@ -83,7 +99,12 @@ exports.postLogin = (req, res, next) => {
           return res.status(422).render('auth/login', {
             path: '/login',
             pageTitle: 'Login',
-            errorMessage: 'Invalid email or password.'
+            errorMessage: 'Invalid email or password.',
+            oldInput: {
+              email: email,
+              password: password
+            },
+            validationErrors: []
           });
         })
         .catch(err => {

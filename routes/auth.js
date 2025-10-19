@@ -14,7 +14,8 @@ router.post('/login',
     [
         body('email')
             .isEmail()
-            .withMessage('Please enter a valid email.'),
+            .withMessage('Please enter a valid email.')
+            .normalizeEmail(),
         body('password', 'Password is not valid.')
             .trim()
             .isLength({ min: 5 })
@@ -40,19 +41,23 @@ router.post(
             );
           }
         });
-      }),
+      })
+      .normalizeEmail(),
     body(
       'password',
       'Please enter a password with only numbers and text and at least 5 characters.'
     )
       .isLength({ min: 5 })
-      .isAlphanumeric(),
-    body('confirmPassword').custom((value, { req }) => {
-      if (value !== req.body.password) {
-        throw new Error('Passwords do not match!');
-      }
-      return true;
-    })
+      .isAlphanumeric()
+      .trim(),
+    body('confirmPassword')
+      .trim()
+      .custom((value, { req }) => {
+        if (value !== req.body.password) {
+          throw new Error('Passwords do not match!');
+        }
+        return true;
+      })
   ],
   authController.postSignup
 );
