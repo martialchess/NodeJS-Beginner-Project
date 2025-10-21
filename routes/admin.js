@@ -47,7 +47,6 @@ router.post('/edit-product',
         body('description')
             .isLength({ min: 5, max: 400 })
             .trim(),
-        body('imageUrl').isURL()
     ],
     isAuth, 
     adminController.postEditProduct);
