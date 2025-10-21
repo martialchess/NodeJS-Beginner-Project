@@ -26,9 +26,8 @@ router.post('/add-product',
         body('price').isFloat(),
         body('description')
             .isLength({ min: 5, max: 400 })
-            .trim(),
-        body('imageUrl').isURL()
-    ],
+            .trim()
+    ], 
     isAuth, 
     adminController.postAddProduct);
 

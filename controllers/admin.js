@@ -4,6 +4,19 @@ const { validationResult } = require('express-validator');
 
 const Product = require('../models/product');
 
+// Helper function to render error page (DRY principle)
+const renderEditProductError = (res, product, errorMessage, validationErrors = [], editing = false) => {
+  return res.status(422).render('admin/edit-product', {
+    pageTitle: editing ? 'Edit Product' : 'Add Product',
+    path: editing ? '/admin/edit-product' : '/admin/add-product',
+    editing: editing,
+    hasError: true,
+    product: product,
+    errorMessage: errorMessage,
+    validationErrors: validationErrors
+  });
+};
+
 exports.getAddProduct = (req, res, next) => {
   res.render('admin/edit-product', {
     pageTitle: 'Add Product',
@@ -17,41 +30,44 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res, next) => {
   const title = req.body.title;
-  const imageUrl = req.body.imageUrl;
+  const image = req.file;
   const price = req.body.price;
   const description = req.body.description;
+  
+  // Validate image first (manual validation)
+  if (!image) {
+    return renderEditProductError(res, {
+      title: title,
+      price: price,
+      description: description
+    }, 'Attached file is not an image.');
+  }
+  
+  const imageUrl = image.path;
+  
+  // Validate other fields (express-validator)
   const errors = validationResult(req);
-
   if (!errors.isEmpty()) {
     console.log(errors.array());
-    return res.status(422).render('admin/edit-product', {
-      pageTitle: 'Add Product',
-      path: '/admin/add-product',
-      editing: false,
-      hasError: true,
-      product: {
-        title: title,
-        imageUrl: imageUrl,
-        price: price,
-        description: description
-      },
-      errorMessage: errors.array()[0].msg,
-      validationErrors: errors.array()
-    });
+    return renderEditProductError(res, {
+      title: title,
+      imageUrl: imageUrl,
+      price: price,
+      description: description
+    }, errors.array()[0].msg, errors.array());
   }
 
   const product = new Product({
-    // _id: new mongoose.Types.ObjectId('5badf72403fd8b5be0366e81'),
     title: title,
     price: price,
     description: description,
     imageUrl: imageUrl,
     userId: req.user
   });
+  
   product
     .save()
     .then(result => {
-      // console.log(result);
       console.log('Created Product');
       res.redirect('/admin/products');
     })
@@ -115,21 +131,13 @@ exports.postEditProduct = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).render('admin/edit-product', {
-      pageTitle: 'Edit Product',
-      path: '/admin/edit-product',
-      editing: true,
-      hasError: true,
-      product: {
-        title: updatedTitle,
-        imageUrl: updatedImageUrl,
-        price: updatedPrice,
-        description: updatedDesc,
-        _id: prodId
-      },
-      errorMessage: errors.array()[0].msg,
-      validationErrors: errors.array()
-    });
+    return renderEditProductError(res, {
+      title: updatedTitle,
+      imageUrl: updatedImageUrl,
+      price: updatedPrice,
+      description: updatedDesc,
+      _id: prodId
+    }, errors.array()[0].msg, errors.array(), true);
   }
 
   Product.findById(prodId)
