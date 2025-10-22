@@ -92,7 +92,6 @@ exports.getIndex = (req, res, next) => {
 exports.getCart = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
-    .execPopulate()
     .then(user => {
       const products = user.cart.items;
       res.render('shop/cart', {
@@ -139,10 +138,32 @@ exports.postCartDeleteProduct = (req, res, next) => {
     });
 };
 
+exports.getCheckout = (req, res, next) => {
+  req.user
+    .populate('cart.items.productId')
+    .then(user => {
+      const products = user.cart.items;
+      let total = 0;
+      products.forEach( p => {
+        total += p.quantity * p.productId.price;
+      });
+      res.render('shop/checkout', {
+        path: '/checkout',
+        pageTitle: 'Checkout',
+        products: products,
+        totalSum: total
+    });
+    })
+    .catch(err => {
+      const error = new Error(err);
+      error.httpStatusCode = 500;
+      return next(error);
+    });
+};
+
 exports.postOrder = (req, res, next) => {
   req.user
     .populate('cart.items.productId')
-    .execPopulate()
     .then(user => {
       const products = user.cart.items.map(i => {
         return { quantity: i.quantity, product: { ...i.productId._doc } };
